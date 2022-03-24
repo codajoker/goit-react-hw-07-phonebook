@@ -1,48 +1,42 @@
 import axios from 'axios';
-import {
-  addItemRequest,
-  addToSuccess,
-  addItemError,
-  removeItemRequest,
-  removeToSuccess,
-  removeItemError,
-  fetchItemError,
-  fetchItemRequest,
-  fetchToSuccess,
-} from './redux-action';
+
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 axios.defaults.baseURL = 'https://6214d79989fad53b1f210931.mockapi.io/';
 
-export const addItem = item => dispatch => {
-  dispatch(addItemRequest());
-  const postItem = { name: item.name, phone: item.number };
-  axios
-    .post('/contacts', postItem)
-    .then(({ data }) => dispatch(addToSuccess(data)))
-    .catch(error => dispatch(addItemError(error)));
-};
-export const removeItem = id => dispatch => {
-  dispatch(removeItemRequest());
-  axios
-    .delete(`/contacts/${id}`)
-    .then(() => dispatch(removeToSuccess(id)))
-    .catch(error => dispatch(removeItemError(error)));
-};
-// export const fetchItem = () => dispatch => {
-//   dispatch(fetchItemRequest());
-//   axios
-//     .get('/contacts')
-//     .then(({ data }) => dispatch(fetchToSuccess(data)))
-//     .catch(error => dispatch(fetchItemError(error)));
-// };
-
 // First, create the thunk
-export const fetchItem = createAsyncThunk('item/fetchItem', async () => {
-  try {
-    const items = await axios.get('/contacts');
-    return items.data;
-  } catch (error) {
-    alert(error);
+export const fetchItem = createAsyncThunk(
+  'item/fetchItem',
+  async (_, { rejectWithValue }) => {
+    try {
+      const items = await axios.get('/contacts');
+      console.log(items.data);
+      return items.data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
   }
-});
+);
+export const addItem = createAsyncThunk(
+  'item/fetchAddItem',
+  async (item, { rejectWithValue }) => {
+    try {
+      const postItem = { name: item.name, phone: item.number };
+      const post = await axios.post('/contacts', postItem);
+      return post.data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+export const removeItem = createAsyncThunk(
+  'item/fetchRemove',
+  async (id, { rejectWithValue }) => {
+    try {
+      await axios.delete(`/contacts/${id}`);
+      return id;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
