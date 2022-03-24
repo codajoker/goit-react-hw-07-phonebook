@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-
+import { fetchItem } from './operetions';
 import {
   addItemRequest,
   addToSuccess,
@@ -8,9 +8,6 @@ import {
   removeItemError,
   removeItemRequest,
   removeToSuccess,
-  fetchItemError,
-  fetchItemRequest,
-  fetchToSuccess,
   changeFilter,
 } from './redux-action';
 export const item = createReducer([], {
@@ -22,7 +19,7 @@ export const item = createReducer([], {
   [removeToSuccess]: (state, action) => {
     return [...state.filter(item => item.id !== action.payload)];
   },
-  [fetchToSuccess]: (state, action) => {
+  [fetchItem.fulfilled]: (state, action) => {
     console.log(action.payload);
     return action.payload.sort((firstStudent, secondStudent) =>
       firstStudent.name.localeCompare(secondStudent.name)
@@ -41,9 +38,9 @@ export const loader = createReducer(false, {
   [removeItemRequest]: () => true,
   [removeToSuccess]: () => false,
   [removeItemError]: () => false,
-  [fetchItemRequest]: () => true,
-  [fetchToSuccess]: () => false,
-  [fetchItemError]: () => false,
+  [fetchItem.pending]: () => true,
+  [fetchItem.rejected]: () => false,
+  [fetchItem.fulfilled]: () => false,
 });
 
 export default combineReducers({ item, filter, loader });
