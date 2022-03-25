@@ -60,26 +60,18 @@ const itemSlice = createSlice({
   },
   extraReducers: {
     [addItem.fulfilled]: (state, action) => {
-      console.log(action.payload);
       state.loader = false;
-
-      return [...state.items, action.payload].sort(
+      state.item = [...state.item, action.payload].sort(
         (firstStudent, secondStudent) =>
           firstStudent.name.localeCompare(secondStudent.name)
       );
     },
     [removeItem.fulfilled]: (state, action) => {
       state.loader = false;
-
-      console.log(
-        [...state.items.filter(item => item.id !== action.payload)].sort(
-          (firstStudent, secondStudent) =>
-            firstStudent.name.localeCompare(secondStudent.name)
-        )
-      );
-      return [...state.items.filter(item => item.id !== action.payload)].sort(
-        (firstStudent, secondStudent) =>
-          firstStudent.name.localeCompare(secondStudent.name)
+      state.item = [
+        ...state.item.filter(item => item.id !== action.payload),
+      ].sort((firstStudent, secondStudent) =>
+        firstStudent.name.localeCompare(secondStudent.name)
       );
     },
     [fetchItem.fulfilled]: (state, action) => {
@@ -87,12 +79,6 @@ const itemSlice = createSlice({
       state.item = action.payload.sort((firstStudent, secondStudent) =>
         firstStudent.name.localeCompare(secondStudent.name)
       );
-      // return [
-      //   ...state.items,
-      //   ...action.payload.sort((firstStudent, secondStudent) =>
-      //     firstStudent.name.localeCompare(secondStudent.name)
-      //   ),
-      // ];
     },
     [addItem.pending]: state => {
       state.loader = true;
@@ -118,6 +104,5 @@ const itemSlice = createSlice({
     },
   },
 });
-console.log(itemSlice);
 export default itemSlice.reducer;
 export const { changeFilterr } = itemSlice.actions;

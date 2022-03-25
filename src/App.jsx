@@ -4,13 +4,10 @@ import { fetchItem, addItem } from './redux/operetions';
 import { useEffect } from 'react';
 function App() {
   let contacts = useSelector(state => state.contacts.item);
-  const state = useSelector(state => state);
   const dispatch = useDispatch();
   const filter = useSelector(state => state.contacts.filter);
   useEffect(() => {
     dispatch(fetchItem());
-
-    console.log(state);
   }, []);
 
   const addContact = data => {
